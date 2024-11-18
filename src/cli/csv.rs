@@ -1,22 +1,8 @@
+use crate::cli::verify_input_file;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::fmt;
-use std::path::Path;
 use std::str::FromStr;
-
-#[derive(Debug, Parser, Serialize, Deserialize)]
-pub struct Opts {
-    #[command(subcommand)]
-    pub cmd: SubCommand,
-}
-
-#[derive(Debug, Parser, Serialize, Deserialize)]
-pub enum SubCommand {
-    #[command(name = "csv", about = "Show CSV, or Convert CSV to other formats")]
-    Csv(CsvOpts),
-    #[command(name = "genpass", about = "Generate a random password")]
-    GenPass(GenPassOpts),
-}
 
 #[derive(Debug, Parser, Serialize, Deserialize)]
 pub struct CsvOpts {
@@ -34,39 +20,6 @@ pub struct CsvOpts {
 
     #[arg(long, default_value_t = true)]
     pub header: bool,
-}
-
-#[derive(Debug, Parser, Serialize, Deserialize)]
-pub struct GenPassOpts {
-    #[arg(short, long, default_value_t = 16)]
-    pub length: u8,
-
-    #[arg(long, default_value_t = false)]
-    pub no_upper: bool,
-
-    #[arg(long, default_value_t = false)]
-    pub no_lower: bool,
-
-    #[arg(long, default_value_t = false)]
-    pub no_number: bool,
-
-    #[arg(long, default_value_t = false)]
-    pub no_symbol: bool,
-}
-
-#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
-pub enum OutputFormat {
-    Json,
-    Yaml,
-}
-
-fn verify_input_file(filename: &str) -> Result<String, &'static str> {
-    // FQDN格式的方法调用 xx::yy::zz
-    if Path::new(filename).exists() {
-        Ok(filename.into())
-    } else {
-        Err("Input file does not exist")
-    }
 }
 
 fn parse_format(format: &str) -> Result<OutputFormat, anyhow::Error> {
@@ -98,4 +51,10 @@ impl fmt::Display for OutputFormat {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", Into::<&str>::into(*self))
     }
+}
+
+#[derive(Debug, Copy, Clone, Serialize, Deserialize)]
+pub enum OutputFormat {
+    Json,
+    Yaml,
 }
