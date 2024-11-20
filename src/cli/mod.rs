@@ -4,6 +4,7 @@ pub mod b64;
 pub mod csv;
 pub mod gen_pass;
 pub mod opts;
+pub mod text;
 
 fn verify_input_file(filename: &str) -> Result<String, &'static str> {
     // FQDN格式的方法调用 xx::yy::zz

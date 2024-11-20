@@ -1,10 +1,10 @@
+use anyhow::Result;
 use rand::prelude::SliceRandom;
-use zxcvbn::zxcvbn;
 
 const UPPER: &[u8] = b"ABCDEFGHJKLMNPQRSTUVWXYZ";
 const LOWER: &[u8] = b"abcdefghijkmnopqrstuvwxyz";
 const NUMBER: &[u8] = b"123456789";
-const SYMBOL: &[u8] = b"!@#$%^&*_+=.]?/";
+const SYMBOL: &[u8] = b"@#$%^&*_+=.";
 
 pub fn process_genpass(
     length: u8,
@@ -12,7 +12,7 @@ pub fn process_genpass(
     no_lower: bool,
     no_number: bool,
     no_symbol: bool,
-) -> anyhow::Result<()> {
+) -> Result<String> {
     let mut pass: Vec<u8> = Vec::with_capacity(length as usize);
     let mut rng = rand::thread_rng();
     let mut chars: Vec<u8> = Vec::new();
@@ -50,10 +50,6 @@ pub fn process_genpass(
     pass.extend_from_slice(pass_chars.0);
     pass.shuffle(&mut rng);
     let password = String::from_utf8_lossy(&pass);
-    println!(
-        "Generate password({}): {}",
-        zxcvbn(password.as_ref(), &[]).score(),
-        password,
-    );
-    Ok(())
+
+    Ok(password.to_string())
 }

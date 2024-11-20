@@ -1,6 +1,7 @@
 use crate::cli::b64::Base64SubCommand;
 use crate::cli::csv::CsvOpts;
 use crate::cli::gen_pass::GenPassOpts;
+use crate::cli::text::TextSubCommand;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 
@@ -18,4 +19,6 @@ pub enum SubCommand {
     GenPass(GenPassOpts),
     #[command(subcommand, name = "base64", about = "Encode or decode base64")]
     Base64(Base64SubCommand),
+    #[command(subcommand, name = "text", about = "Text subcommand")]
+    Text(TextSubCommand),
 }
