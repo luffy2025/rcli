@@ -55,8 +55,9 @@ pub struct TextGenerateOpts {
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
 pub enum TextSignFormat {
-    Ed25519,
     Blake3,
+    ChaCha20Poly1305,
+    Ed25519,
 }
 
 fn parse_format(value: &str) -> Result<TextSignFormat, &'static str> {
@@ -77,6 +78,7 @@ impl From<TextSignFormat> for &'static str {
         match format {
             TextSignFormat::Ed25519 => "ed25519",
             TextSignFormat::Blake3 => "blake3",
+            TextSignFormat::ChaCha20Poly1305 => "chacha20poly1305",
         }
     }
 }
@@ -88,6 +90,7 @@ impl FromStr for TextSignFormat {
         match value.to_lowercase().as_str() {
             "ed25519" => Ok(TextSignFormat::Ed25519),
             "blake3" => Ok(TextSignFormat::Blake3),
+            "chacha20poly1305" => Ok(TextSignFormat::ChaCha20Poly1305),
             _ => Err(anyhow::anyhow!("Invalid format")),
         }
     }

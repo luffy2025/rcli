@@ -1,6 +1,6 @@
 use anyhow::Result;
 use clap::Parser;
-use rcli::TextSignFormat::{Blake3, Ed25519};
+use rcli::TextSignFormat::{Blake3, ChaCha20Poly1305, Ed25519};
 use rcli::{
     process_csv, process_decode, process_encode, process_genpass, process_text_generate,
     process_text_sign, process_text_verify, Base64SubCommand, Opts, SubCommand, TextSubCommand,
@@ -64,6 +64,10 @@ fn main() -> Result<()> {
                         std::fs::write(path, &key[0])?;
                         let path = Path::join(&opts.output, "ed25519.pk");
                         std::fs::write(path, &key[1])?
+                    }
+                    ChaCha20Poly1305 => {
+                        let path = Path::join(&opts.output, "chacha20poly1305.key");
+                        std::fs::write(path, &key[0])?
                     }
                 }
             }
