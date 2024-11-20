@@ -2,13 +2,17 @@ use anyhow::Result;
 use clap::Parser;
 use rcli::TextSignFormat::{Blake3, ChaCha20Poly1305, Ed25519};
 use rcli::{
-    process_csv, process_decode, process_encode, process_genpass, process_text_generate,
-    process_text_sign, process_text_verify, Base64SubCommand, Opts, SubCommand, TextSubCommand,
+    process_csv, process_decode, process_encode, process_genpass, process_http_serve,
+    process_text_generate, process_text_sign, process_text_verify, Base64SubCommand,
+    HttpSubCommand, Opts, SubCommand, TextSubCommand,
 };
 use std::path::Path;
 use zxcvbn::zxcvbn;
 
-fn main() -> Result<()> {
+#[tokio::main]
+async fn main() -> Result<()> {
+    tracing_subscriber::fmt::init();
+
     let opts = Opts::parse();
     match opts.cmd {
         SubCommand::Csv(opts) => {
@@ -70,6 +74,11 @@ fn main() -> Result<()> {
                         std::fs::write(path, &key[0])?
                     }
                 }
+            }
+        },
+        SubCommand::Http(subcmd) => match subcmd {
+            HttpSubCommand::Serve(opts) => {
+                process_http_serve(opts.dir, opts.port).await?;
             }
         },
     }

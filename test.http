@@ -1,0 +1,11 @@
+### test success
+GET http://localhost:8080/Cargo.toml
+
+### test success
+GET http://localhost:8080/fixtures/blake3.key
+
+### test file not found
+GET http://localhost:8080/fixtures/unknown.txt
+
+### test read file error
+GET http://localhost:8080/fixtures/ed25519.sk

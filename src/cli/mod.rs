@@ -1,10 +1,11 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-pub mod b64;
-pub mod csv;
-pub mod gen_pass;
-pub mod opts;
-pub mod text;
+pub(crate) mod b64;
+pub(crate) mod csv;
+pub(crate) mod gen_pass;
+pub(crate) mod http;
+pub(crate) mod opts;
+pub(crate) mod text;
 
 fn verify_input_file(filename: &str) -> Result<String, &'static str> {
     // FQDN格式的方法调用 xx::yy::zz
@@ -12,6 +13,15 @@ fn verify_input_file(filename: &str) -> Result<String, &'static str> {
         Ok(filename.into())
     } else {
         Err("Input file does not exist")
+    }
+}
+
+fn verify_path(value: &str) -> std::result::Result<PathBuf, &'static str> {
+    let path = PathBuf::from(value);
+    if path.exists() && path.is_dir() {
+        Ok(path)
+    } else {
+        Err("Invalid path")
     }
 }
 

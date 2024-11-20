@@ -1,4 +1,5 @@
 use crate::cli::verify_input_file;
+use crate::cli::verify_path;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
@@ -62,15 +63,6 @@ pub enum TextSignFormat {
 
 fn parse_format(value: &str) -> Result<TextSignFormat, &'static str> {
     value.parse().map_err(|_| "Invalid format")
-}
-
-fn verify_path(value: &str) -> Result<PathBuf, &'static str> {
-    let path = PathBuf::from(value);
-    if path.exists() && path.is_dir() {
-        Ok(path)
-    } else {
-        Err("Invalid path")
-    }
 }
 
 impl From<TextSignFormat> for &'static str {
