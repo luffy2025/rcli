@@ -1,3 +1,4 @@
+use crate::{CmdExecutor, SubCommand};
 use std::path::{Path, PathBuf};
 
 pub(crate) mod b64;
@@ -6,6 +7,18 @@ pub(crate) mod gen_pass;
 pub(crate) mod http;
 pub(crate) mod opts;
 pub(crate) mod text;
+
+impl CmdExecutor for SubCommand {
+    async fn execute(self) -> anyhow::Result<()> {
+        match self {
+            SubCommand::Csv(opts) => opts.execute().await,
+            SubCommand::GenPass(opts) => opts.execute().await,
+            SubCommand::Base64(subcmd) => subcmd.execute().await,
+            SubCommand::Text(subcmd) => subcmd.execute().await,
+            SubCommand::Http(subcmd) => subcmd.execute().await,
+        }
+    }
+}
 
 fn verify_input_file(filename: &str) -> Result<String, &'static str> {
     // FQDN格式的方法调用 xx::yy::zz

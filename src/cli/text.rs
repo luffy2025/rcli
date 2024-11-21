@@ -1,9 +1,10 @@
 use crate::cli::verify_input_file;
 use crate::cli::verify_path;
+use crate::CmdExecutor;
 use clap::Parser;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
 #[derive(Debug, Parser, Serialize, Deserialize)]
@@ -18,6 +19,16 @@ pub enum TextSubCommand {
     Generate(TextGenerateOpts),
 }
 
+impl CmdExecutor for TextSubCommand {
+    async fn execute(self) -> anyhow::Result<()> {
+        match self {
+            TextSubCommand::Sign(opts) => opts.execute().await,
+            TextSubCommand::Verify(opts) => opts.execute().await,
+            TextSubCommand::Generate(opts) => opts.execute().await,
+        }
+    }
+}
+
 #[derive(Debug, Parser, Serialize, Deserialize)]
 pub struct TextSignOpts {
     #[arg(short, long, value_parser = verify_input_file, default_value = "-")]
@@ -28,6 +39,14 @@ pub struct TextSignOpts {
 
     #[arg(short, long, value_parser = parse_format, default_value = "blake3")]
     pub format: TextSignFormat,
+}
+
+impl CmdExecutor for TextSignOpts {
+    async fn execute(self) -> anyhow::Result<()> {
+        let sig = crate::process::process_text_sign(&self.input, &self.key, self.format)?;
+        println!("{}", sig);
+        Ok(())
+    }
 }
 
 #[derive(Debug, Parser, Serialize, Deserialize)]
@@ -45,6 +64,19 @@ pub struct TextVerifyOpts {
     pub format: TextSignFormat,
 }
 
+impl CmdExecutor for TextVerifyOpts {
+    async fn execute(self) -> anyhow::Result<()> {
+        let verified = crate::process::process_text_verify(
+            &self.input,
+            &self.key,
+            &self.signature,
+            self.format,
+        )?;
+        print!("{}", verified);
+        Ok(())
+    }
+}
+
 #[derive(Debug, Parser, Serialize, Deserialize)]
 pub struct TextGenerateOpts {
     #[arg(short, long, default_value = "blake3", value_parser = parse_format)]
@@ -52,6 +84,29 @@ pub struct TextGenerateOpts {
 
     #[arg(short, long, value_parser = verify_path)]
     pub output: PathBuf,
+}
+
+impl CmdExecutor for TextGenerateOpts {
+    async fn execute(self) -> anyhow::Result<()> {
+        let key = crate::process::process_text_generate(self.format)?;
+
+        match self.format {
+            TextSignFormat::Blake3 => {
+                let path = Path::join(&self.output, "blake3.key");
+                std::fs::write(path, key[0].as_slice())?;
+            }
+            TextSignFormat::Ed25519 => {
+                let path = Path::join(&self.output, "ed25519.key");
+                std::fs::write(path, key[0].as_slice())?;
+            }
+            TextSignFormat::ChaCha20Poly1305 => {
+                let path = Path::join(&self.output, "chacha20poly1305.key");
+                std::fs::write(path, key[0].as_slice())?;
+            }
+        }
+
+        Ok(())
+    }
 }
 
 #[derive(Debug, Copy, Clone, Serialize, Deserialize)]
