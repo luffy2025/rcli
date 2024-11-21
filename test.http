@@ -9,3 +9,16 @@ GET http://localhost:8080/fixtures/unknown.txt
 
 ### test read file error
 GET http://localhost:8080/fixtures/ed25519.sk
+
+### test static file with tower-http
+GET http://localhost:8080/Cargo.toml
+Range: bytes=0-100
+
+### test static file with tower-http
+GET http://localhost:8080/tower/Cargo.toml
+
+### test static file with tower-http
+GET http://localhost:8080/tower/fixtures/ed25519.pk
+
+### test static file with tower-http
+GET http://localhost:8080/tower/fixtures/

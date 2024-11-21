@@ -9,6 +9,8 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tracing::{info, warn};
 
+use tower_http::services::ServeDir;
+
 #[derive(Debug)]
 struct HttpServeState {
     path: PathBuf,
@@ -21,6 +23,7 @@ pub async fn process_http_serve(path: PathBuf, port: u16) -> Result<()> {
     let state = HttpServeState { path };
     let router = Router::new()
         .route("/*path", get(file_handler))
+        .nest_service("/tower", ServeDir::new(state.path.clone()))
         .with_state(Arc::new(state));
 
     let listener = tokio::net::TcpListener::bind(addr).await?;
@@ -52,5 +55,22 @@ async fn file_handler(
                 )
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_file_handler() {
+        let state = Arc::new(HttpServeState {
+            path: PathBuf::from("."),
+        });
+        let (header, _) = file_handler(State(state), Path("Cargo.toml".to_string()))
+            .await
+            .into_response()
+            .into_parts();
+        assert_eq!(header.status, StatusCode::OK);
     }
 }
