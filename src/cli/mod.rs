@@ -1,23 +1,38 @@
-use crate::{CmdExecutor, SubCommand};
+use crate::cli::b64::Base64SubCommand;
+use crate::cli::csv::CsvOpts;
+use crate::cli::gen_pass::GenPassOpts;
+use crate::cli::http::HttpSubCommand;
+use crate::cli::text::TextSubCommand;
+use clap::Parser;
+use enum_dispatch::enum_dispatch;
+use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 
 pub(crate) mod b64;
 pub(crate) mod csv;
 pub(crate) mod gen_pass;
 pub(crate) mod http;
-pub(crate) mod opts;
 pub(crate) mod text;
 
-impl CmdExecutor for SubCommand {
-    async fn execute(self) -> anyhow::Result<()> {
-        match self {
-            SubCommand::Csv(opts) => opts.execute().await,
-            SubCommand::GenPass(opts) => opts.execute().await,
-            SubCommand::Base64(subcmd) => subcmd.execute().await,
-            SubCommand::Text(subcmd) => subcmd.execute().await,
-            SubCommand::Http(subcmd) => subcmd.execute().await,
-        }
-    }
+#[derive(Debug, Parser, Serialize, Deserialize)]
+pub struct Opts {
+    #[command(subcommand)]
+    pub cmd: SubCommand,
+}
+
+#[enum_dispatch(CmdExecutor)]
+#[derive(Debug, Parser, Serialize, Deserialize)]
+pub enum SubCommand {
+    #[command(name = "csv", about = "Show CSV, or Convert CSV to other formats")]
+    Csv(CsvOpts),
+    #[command(name = "genpass", about = "Generate a random password")]
+    GenPass(GenPassOpts),
+    #[command(subcommand, name = "base64", about = "Encode or decode base64")]
+    Base64(Base64SubCommand),
+    #[command(subcommand, name = "crypto", about = "Text subcommand")]
+    Text(TextSubCommand),
+    #[command(subcommand, name = "http", about = "HTTP subcommand")]
+    Http(HttpSubCommand),
 }
 
 fn verify_input_file(filename: &str) -> Result<String, &'static str> {

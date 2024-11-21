@@ -1,5 +1,5 @@
+use crate::process::process_genpass;
 use crate::process::text::{KeyLoader, TextGenerator, TextSign, TextVerify};
-use crate::process_genpass;
 use std::fs;
 use std::io::Read;
 use std::path::Path;

@@ -2,11 +2,13 @@ use crate::cli::verify_input_file;
 use crate::cli::verify_path;
 use crate::CmdExecutor;
 use clap::Parser;
+use enum_dispatch::enum_dispatch;
 use serde::{Deserialize, Serialize};
 use std::fmt::Display;
 use std::path::{Path, PathBuf};
 use std::str::FromStr;
 
+#[enum_dispatch(CmdExecutor)]
 #[derive(Debug, Parser, Serialize, Deserialize)]
 pub enum TextSubCommand {
     #[command(name = "sign", about = "Sign a message with a private/shared key")]
@@ -17,16 +19,6 @@ pub enum TextSubCommand {
 
     #[command(name = "generate", about = "Generate a key pair")]
     Generate(TextGenerateOpts),
-}
-
-impl CmdExecutor for TextSubCommand {
-    async fn execute(self) -> anyhow::Result<()> {
-        match self {
-            TextSubCommand::Sign(opts) => opts.execute().await,
-            TextSubCommand::Verify(opts) => opts.execute().await,
-            TextSubCommand::Generate(opts) => opts.execute().await,
-        }
-    }
 }
 
 #[derive(Debug, Parser, Serialize, Deserialize)]

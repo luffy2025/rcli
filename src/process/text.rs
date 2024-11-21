@@ -1,6 +1,8 @@
 use crate::cli::text::TextSignFormat;
+use crate::get_reader;
+use crate::process::crypto::blake3::Blake3;
 use crate::process::crypto::chacha20poly1305::ChaCha20Poly1305Encryptor;
-use crate::{get_reader, Blake3, Ed25519Signer, Ed25519Verifier};
+use crate::process::crypto::ed25519::{Ed25519Signer, Ed25519Verifier};
 use anyhow::Result;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine as _};
 use std::io::Read;
@@ -73,8 +75,6 @@ pub fn process_text_generate(format: TextSignFormat) -> Result<Vec<Vec<u8>>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::process::Blake3;
-    use crate::process::{Ed25519Signer, Ed25519Verifier};
     use anyhow::Result;
 
     #[test]
