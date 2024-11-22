@@ -23,15 +23,15 @@ pub struct Opts {
 #[enum_dispatch(CmdExecutor)]
 #[derive(Debug, Parser, Serialize, Deserialize)]
 pub enum SubCommand {
-    #[command(name = "csv", about = "Show CSV, or Convert CSV to other formats")]
+    #[command(about = "Show CSV, or Convert CSV to other formats")]
     Csv(CsvOpts),
     #[command(name = "genpass", about = "Generate a random password")]
     GenPass(GenPassOpts),
-    #[command(subcommand, name = "base64", about = "Encode or decode base64")]
+    #[command(subcommand, about = "Encode or decode base64")]
     Base64(Base64SubCommand),
-    #[command(subcommand, name = "crypto", about = "Text subcommand")]
+    #[command(subcommand, about = "Text subcommand")]
     Text(TextSubCommand),
-    #[command(subcommand, name = "http", about = "HTTP subcommand")]
+    #[command(subcommand, about = "HTTP subcommand")]
     Http(HttpSubCommand),
 }
 

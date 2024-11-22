@@ -13,9 +13,8 @@ impl Blake3 {
         Self { key }
     }
 
-    pub fn try_new(key: &[u8]) -> anyhow::Result<Self> {
-        let key = &key[..32];
-        let key: [u8; 32] = key.try_into()?;
+    pub fn try_new(key: impl AsRef<[u8]>) -> anyhow::Result<Self> {
+        let key: [u8; 32] = key.as_ref()[..32].try_into()?;
         Ok(Self::new(key))
     }
 }
@@ -23,7 +22,7 @@ impl Blake3 {
 impl KeyLoader for Blake3 {
     fn load(path: impl AsRef<Path>) -> anyhow::Result<Self> {
         let key = fs::read(path)?;
-        Self::try_new(&key)
+        Self::try_new(key)
     }
 }
 

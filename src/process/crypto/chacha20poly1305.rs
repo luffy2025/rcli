@@ -13,8 +13,8 @@ pub struct ChaCha20Poly1305Encryptor {
 }
 
 impl ChaCha20Poly1305Encryptor {
-    pub fn try_new(key: &[u8]) -> Result<Self> {
-        let cipher = ChaCha20Poly1305::new(key.into());
+    pub fn try_new(key: impl AsRef<[u8]>) -> Result<Self> {
+        let cipher = ChaCha20Poly1305::new(key.as_ref().into());
         Ok(Self { cipher })
     }
 }
@@ -28,8 +28,8 @@ impl TextGenerator for ChaCha20Poly1305Encryptor {
 
 impl KeyLoader for ChaCha20Poly1305Encryptor {
     fn load(path: impl AsRef<Path>) -> Result<Self> {
-        let key = fs::read(path)?;
-        Self::try_new(&key[..32])
+        let key = &fs::read(path)?[..32];
+        Self::try_new(key)
     }
 }
 

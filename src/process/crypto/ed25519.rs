@@ -56,8 +56,8 @@ impl Ed25519Verifier {
         Self { key }
     }
 
-    pub fn try_new(key: &[u8]) -> anyhow::Result<Self> {
-        let key = VerifyingKey::from_bytes(&key[..32].try_into()?)?;
+    pub fn try_new(key: impl AsRef<[u8]>) -> anyhow::Result<Self> {
+        let key = VerifyingKey::from_bytes(key.as_ref()[..32].try_into()?)?;
         Ok(Self::new(key))
     }
 }
@@ -65,7 +65,7 @@ impl Ed25519Verifier {
 impl KeyLoader for Ed25519Verifier {
     fn load(path: impl AsRef<Path>) -> anyhow::Result<Self> {
         let key = fs::read(path)?;
-        Self::try_new(&key)
+        Self::try_new(key)
     }
 }
 
