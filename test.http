@@ -22,3 +22,9 @@ GET http://localhost:8080/tower/fixtures/ed25519.pk
 
 ### test static file with tower-http
 GET http://localhost:8080/tower/fixtures/
+
+### test recursive walk static dir
+GET http://localhost:8080/src/
+
+### test recursive walk static dir with deep
+GET http://localhost:8080/src/?deep=1
