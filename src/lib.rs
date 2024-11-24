@@ -8,10 +8,10 @@ pub use cli::b64::*;
 pub use cli::csv::*;
 pub use cli::gen_pass::*;
 pub use cli::http::*;
+pub use cli::jwt::*;
 pub use cli::text::*;
 pub use cli::Opts;
 pub use cli::SubCommand;
-
 pub use utils::*;
 
 #[enum_dispatch]

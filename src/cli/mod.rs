@@ -2,6 +2,7 @@ use crate::cli::b64::Base64SubCommand;
 use crate::cli::csv::CsvOpts;
 use crate::cli::gen_pass::GenPassOpts;
 use crate::cli::http::HttpSubCommand;
+use crate::cli::jwt::JwtSubCommand;
 use crate::cli::text::TextSubCommand;
 use clap::Parser;
 use enum_dispatch::enum_dispatch;
@@ -12,6 +13,7 @@ pub(crate) mod b64;
 pub(crate) mod csv;
 pub(crate) mod gen_pass;
 pub(crate) mod http;
+pub(crate) mod jwt;
 pub(crate) mod text;
 
 #[derive(Debug, Parser, Serialize, Deserialize)]
@@ -33,6 +35,8 @@ pub enum SubCommand {
     Text(TextSubCommand),
     #[command(subcommand, about = "HTTP subcommand")]
     Http(HttpSubCommand),
+    #[command(subcommand, about = "JWT subcommand")]
+    Jwt(JwtSubCommand),
 }
 
 fn verify_input_file(filename: &str) -> Result<String, &'static str> {
@@ -44,7 +48,7 @@ fn verify_input_file(filename: &str) -> Result<String, &'static str> {
     }
 }
 
-fn verify_path(value: &str) -> std::result::Result<PathBuf, &'static str> {
+fn verify_path(value: &str) -> Result<PathBuf, &'static str> {
     let path = PathBuf::from(value);
     if path.exists() && path.is_dir() {
         Ok(path)
