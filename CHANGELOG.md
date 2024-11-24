@@ -3,6 +3,37 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 ---
+## [1-15-dir-index](https://github.com/luffy2025/rcli/compare/v1-15-jwt..v1-15-dir-index) - 2024-11-24
+
+### Features
+
+- add directory index in http cmd - ([24558d7](https://github.com/luffy2025/rcli/commit/24558d792d1fa9ce7222fc4e1c5498bff6dee545)) - Luffy2025
+
+---
+## [1-15-jwt](https://github.com/luffy2025/rcli/compare/v1-14-refactor..v1-15-jwt) - 2024-11-24
+
+### Features
+
+- support jwt sign and verify - ([a7b7f76](https://github.com/luffy2025/rcli/commit/a7b7f76124b3f93e48f3338e4302207d37fc0134)) - Luffy2025
+
+### Refactoring
+
+- update to use impl AsRef<> - ([7576540](https://github.com/luffy2025/rcli/commit/757654063e4f6e0817b022e4bc567272f7e81b4d)) - Luffy2025
+
+---
+## [1-14-refactor](https://github.com/luffy2025/rcli/compare/v1-11-http-static-server..v1-14-refactor) - 2024-11-21
+
+### Features
+
+- add tower-http support - ([f9f148c](https://github.com/luffy2025/rcli/commit/f9f148cd3117332d503431c93ebb47581d68ab06)) - Luffy2025
+- refactor with a CmdExecutor trait - ([22aed19](https://github.com/luffy2025/rcli/commit/22aed196da75190f5301512569aeaf361c2bd3b7)) - Luffy2025
+- use enum_dispatch to reduce duplicate code - ([ad4f261](https://github.com/luffy2025/rcli/commit/ad4f261b8f348e6f7732450dfa653a71b74eded0)) - Luffy2025
+
+### Miscellaneous Chores
+
+- update CHANGELOG.md - ([fd923cd](https://github.com/luffy2025/rcli/commit/fd923cd9caeaa451b11acb14ab0329cb90b1fa64)) - Luffy2025
+
+---
 ## [1-11-http-static-server](https://github.com/luffy2025/rcli/compare/v1-11-text-chacha20poly1305..v1-11-http-static-server) - 2024-11-20
 
 ### Features
